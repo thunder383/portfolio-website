@@ -13,7 +13,7 @@
     
     <div class="nav-buttons">
         <a href="#" id="projects-btn">Projects</a>
-        <a href="Shrey_Patel_CV_Corporate.docx" download="Shrey_Patel_CV.docx">CV</a>
+        <a href="#" id="cv-btn">CV</a>
         <a href="#" id="contact-btn">Contact</a>
     </div>
 
@@ -764,8 +764,30 @@
             // Store closePanel in window for use by email form
             window.__closeContactPanel = closePanel;
         })();
+
+        // CV Download Handler for GitHub Pages
+        document.addEventListener('DOMContentLoaded', () => {
+            const cvBtn = document.getElementById('cv-btn');
+            if (cvBtn) {
+                cvBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    fetch('Shrey_Patel_CV_Corporate.docx')
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = 'Shrey_Patel_CV.docx';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            window.URL.revokeObjectURL(url);
+                        })
+                        .catch(error => console.error('Error downloading CV:', error));
+                });
+            }
+        });
     </script>
 
 </body>
 </html>
-
