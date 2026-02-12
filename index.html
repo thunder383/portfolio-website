@@ -36,7 +36,7 @@
             <h3>Contact</h3>
             <p>Email: <a href="mailto:patelshrey16@gmail.com">patelshrey16@gmail.com</a></p>
             <p>LinkedIn: <a href="https://www.linkedin.com/in/shrey-patel6/" target="_blank" rel="noopener">linkedin.com/in/shrey-patel6</a></p>
-            <form id="contact-form" action="https://formsubmit.co/patelshrey16@gmail.com" method="POST">
+            <form id="contact-form" action="https://formsubmit.co/ajax/patelshrey16@gmail.com" method="POST">
                 <div class="control-group">
                     <label for="contact-name">Name</label>
                     <input type="text" id="contact-name" name="name" placeholder="Your name" required>
@@ -53,7 +53,6 @@
                     <button type="submit" class="reset-btn">Send</button>
                 </div>
                 <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_next" value="">
             </form>
         </div>
     </div>
@@ -606,9 +605,30 @@
                 if (!form) return;
                 
                 form.addEventListener('submit', (e) => {
-                    // Don't prevent default - let FormSubmit handle it
-                    // But we'll add some logging
-                    console.log('Form submitted to FormSubmit.co');
+                    e.preventDefault();
+                    
+                    const formData = new FormData(form);
+                    
+                    console.log('Submitting form with data:', Object.fromEntries(formData));
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => {
+                        console.log('Form submitted successfully', response.status);
+                        if (response.ok) {
+                            alert('Message sent successfully!');
+                            form.reset();
+                            // Close panel if it exists
+                            const closePanel = window.__closeContactPanel;
+                            if (closePanel) closePanel();
+                        } else {
+                            alert('There was an error sending your message. Please try again.');
+                        }
+                    }).catch(error => {
+                        console.error('Form submission error:', error);
+                        alert('Error sending message: ' + error.message);
+                    });
                 });
             }
             
